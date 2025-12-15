@@ -96,13 +96,6 @@ todo-app/
 └── README.md                 # Documentación completa
 ```
 
-## 🌐 Acceder a la Aplicación
-
-La aplicación está disponible en:
-```
-http://localhost:5173/
-```
-
 ### Características Disponibles
 
 1. **Crear Tarea**: Formulario con título, descripción, fecha y prioridad
@@ -165,6 +158,6 @@ npm run build
 
 El **Gestor de Tareas** está completamente funcional y listo para usar.
 
-Accede a: **http://localhost:5173/**
+Accede a: **https://todo-app-kalevin.vercel.app/**
 
 ---
