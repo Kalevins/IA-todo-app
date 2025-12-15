@@ -161,3 +161,47 @@ El **Gestor de Tareas** está completamente funcional y listo para usar.
 Accede a: **https://ia-todo-app-kalevin.vercel.app/**
 
 ---
+
+## 🧪 Pruebas Automatizadas
+
+En la app `todo-app` se configuró un entorno de pruebas con Vitest y React Testing Library para validar componentes y flujos end‑to‑end en `jsdom` usando IndexedDB (Dexie) simulado con `fake-indexeddb`.
+
+- Entorno: Vitest (jsdom), RTL (`@testing-library/react`, `@testing-library/user-event`), `@testing-library/jest-dom`, `fake-indexeddb`.
+- Configuración: ver [todo-app/vite.config.js](todo-app/vite.config.js) y [todo-app/setupTests.js](todo-app/setupTests.js).
+- Limpieza de DB: `setupTests.js` elimina la base Dexie (`TodoAppDB`) tras cada test.
+
+### Scripts
+
+Ejecuta los comandos desde la carpeta `todo-app`.
+
+```bash
+cd todo-app
+npm run test          # modo watch interactivo
+npm run test -- --run # ejecución única (ideal para CI)
+npm run test:coverage # reporte de cobertura (texto + html)
+```
+
+### Estructura de pruebas
+
+- Unitario: [todo-app/src/__tests__/TaskItem.test.jsx](todo-app/src/__tests__/TaskItem.test.jsx)
+	- Verifica render de `TaskItem`, prioridad, toggle de estado y acciones editar/eliminar.
+- Integración: [todo-app/src/__tests__/AppIntegration.test.jsx](todo-app/src/__tests__/AppIntegration.test.jsx)
+	- Flujo “Crear Tarea”: escribir título, agregar, esperar a que aparezca en el DOM.
+- Integración (filtros/orden): [todo-app/src/__tests__/AppFiltersAndSort.test.jsx](todo-app/src/__tests__/AppFiltersAndSort.test.jsx)
+	- Crear múltiples tareas, ordenar por prioridad, filtrar “Completadas”, “Pendientes” y “Todas”.
+
+Buenas prácticas aplicadas:
+- Consultas accesibles (roles, placeholder, texto visible).
+- `userEvent.setup()` con `await` en interacciones.
+- `findBy*` para esperar actualizaciones asíncronas (Dexie/React).
+
+### CI
+
+Se añadió un workflow de GitHub Actions para ejecutar pruebas en cada push/PR a `main`:
+
+- Archivo: [.github/workflows/tests.yml](.github/workflows/tests.yml)
+- Pasos: `npm ci` y `npm run test -- --run` dentro de [todo-app](todo-app).
+
+Notas:
+- React puede mostrar avisos sobre `act()` durante interacciones; las pruebas ya usan `await` y `findBy*` para sincronizar.
+- Dexie puede registrar mensajes al cerrar/eliminar la base durante la limpieza; no afectan los resultados.
